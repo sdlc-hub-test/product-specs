@@ -58890,7 +58890,7 @@ var GitHub = class {
   /** Who pushed to a branch: the repository's push and force-push activity, each with the authenticated actor. */
   async pushers(owner, name, branch) {
     const users = /* @__PURE__ */ new Set();
-    for (const type of ["push", "force_push"]) {
+    for (const type of ["branch_creation", "push", "force_push"]) {
       for (let page = 1; page <= 20; page++) {
         const list = await this.call("GET", `/repos/${enc2(owner)}/${enc2(name)}/activity?ref=${enc2(`refs/heads/${branch}`)}&activity_type=${type}&per_page=100&page=${page}`);
         for (const a of list) users.add(a.actor?.login ?? "(unknown)");
@@ -59599,7 +59599,7 @@ import { dirname as dirname9, join as join13 } from "node:path";
 // src/person.ts
 init_src();
 import { createHash as createHash5 } from "node:crypto";
-import { spawnSync as spawnSync3 } from "node:child_process";
+import { spawnSync as spawnSync4 } from "node:child_process";
 import { existsSync as existsSync7, mkdirSync as mkdirSync8, readFileSync as readFileSync7, writeFileSync as writeFileSync9 } from "node:fs";
 import { dirname as dirname8, isAbsolute as isAbsolute2, join as join12, resolve as resolve5 } from "node:path";
 
@@ -60472,7 +60472,7 @@ jobs:
 }
 
 // ../install/src/install-github.ts
-import { execFileSync as execFileSync9 } from "node:child_process";
+import { execFileSync as execFileSync9, spawnSync as spawnSync3 } from "node:child_process";
 import { mkdtempSync as mkdtempSync5, readFileSync as readFileSync6, rmSync as rmSync6 } from "node:fs";
 import { tmpdir as tmpdir5 } from "node:os";
 import { join as join11 } from "node:path";
@@ -60509,16 +60509,14 @@ async function preflightGitHub(a, gh) {
   const isPrivate = specs ? specs.private : true;
   const paid = plan !== "free";
   add4("plan", !isPrivate || paid, !isPrivate ? `${org.login} is on ${plan}; ${a.repo.trim()} is public, so rulesets and auto-merge are available` : paid ? `${org.login} is on GitHub ${plan}: rulesets and auto-merge are available for private repositories` : `${org.login} is on GitHub Free, which gives private repositories no rulesets and no auto-merge. Upgrade it to GitHub Team, or make ${a.repo.trim()} public`);
+  const keys = org.deploy_keys_enabled_for_repositories !== false;
+  add4("deploy-keys", keys, keys ? `${org.login} allows deploy keys, which team CI writes hub-state with` : `${org.login} has deploy keys turned off, and team CI writes hub-state with one. Turn them on in the organization's settings: Repository, Deploy keys`);
   for (const t of a.teams) {
     const r = await gh.repo(org.login, t.repo.trim());
     add4(`team-${teamId(t.name)}`, !!r, r ? `Found ${r.full_name} for ${t.name.trim()}` : `There is no repository ${org.login}/${t.repo.trim()} for ${t.name.trim()}`);
   }
-  try {
-    execFileSync9("ssh-keygen", ["-?"], { stdio: "ignore" });
-  } catch (e) {
-    const missing = e.code === "ENOENT";
-    add4("ssh-keygen", !missing, missing ? "ssh-keygen is missing: install OpenSSH, which makes the key team CI writes hub-state with" : "ssh-keygen is available", true);
-  }
+  const missing = spawnSync3("ssh-keygen", ["-?"], { stdio: "ignore" }).error !== void 0;
+  add4("ssh-keygen", !missing, missing ? "ssh-keygen is missing: install OpenSSH, which makes the key team CI writes hub-state with" : "ssh-keygen is available");
   return { user: { id: me.id, username: me.login, name: me.name ?? me.login }, checks, ok: checks.every((c) => c.ok || !c.blocking) };
 }
 function newDeployKey() {
@@ -60696,7 +60694,7 @@ function hostSaves(config2, o = {}) {
 
 // src/person.ts
 var runCommand = (cmd, args, cwd) => {
-  const r = spawnSync3(cmd, args, { cwd, encoding: "utf8", env: { ...process.env, GIT_TERMINAL_PROMPT: "0" }, timeout: 12e4 });
+  const r = spawnSync4(cmd, args, { cwd, encoding: "utf8", env: { ...process.env, GIT_TERMINAL_PROMPT: "0" }, timeout: 12e4 });
   return { status: r.status ?? 1, out: `${r.stdout ?? ""}${r.stderr ?? ""}`.trim() };
 };
 var release2 = (root) => {
