@@ -1,0 +1,15 @@
+{
+  "branch": "hub/oskvision/outside-20261009160413",
+  "mr": 23,
+  "author": "oskvision",
+  "sha": "2bc11d2e5064f422bf7ba2a81b428c3f7968b361",
+  "at": "2026-10-09T16:04:32Z",
+  "findings": [
+    {
+      "user": "oskvision",
+      "path": "notes/advisory-1791561853307.md",
+      "reason": "No role of oskvision (po) may change notes/advisory-1791561853307.md"
+    }
+  ],
+  "advisory": true
+}
