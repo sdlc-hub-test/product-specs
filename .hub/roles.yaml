@@ -3,3 +3,4 @@ people:
   - user: vitaliyoskalenko
     name: Vitaliy
     role: admin
+  - { user: oskvision, name: oskvision, role: po }
