@@ -1,0 +1,49 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/hub/cli.js\" hook session-start --assistant codex",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/hub/cli.js\" hook prompt --assistant codex",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__hub__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/hub/cli.js\" hook tool --assistant codex",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/hub/cli.js\" hook stop --assistant codex",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

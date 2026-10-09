@@ -1,0 +1,24 @@
+schema_version: 1
+git:
+  provider: github
+  host: github.com
+  namespace: sdlc-hub-test
+  repo: product-specs
+project:
+  name: Marketplace
+teams:
+  - id: backend
+    name: Backend
+    repo: sdlc-hub-test/backend
+    kind: backend
+    api_contract: true
+  - id: web
+    name: Web
+    repo: sdlc-hub-test/web-admin
+    kind: web
+tracker:
+  type: none
+assistants: [claude, codex, cursor]
+engine: sdd
+headless:
+  enabled: false

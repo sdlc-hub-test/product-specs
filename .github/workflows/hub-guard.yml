@@ -1,0 +1,37 @@
+# Written by SDLC Hub. It runs from the default branch for every pull request into it, so a pull request cannot
+# change the guard that judges it. The pull request is checked out as data only: none of its code runs here.
+name: hub-guard
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: write
+  pull-requests: read
+jobs:
+  hub-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: The hub, from the default branch
+        uses: actions/checkout@v4
+        with:
+          path: base
+          sparse-checkout: hub
+          persist-credentials: false
+      - name: The pull request, as data
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Judge the changes by the roles on the default branch
+        working-directory: pr
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          git -c http.extraHeader="Authorization: Basic $(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 | tr -d '\n')" fetch -q origin "+refs/heads/$BASE_REF:refs/remotes/origin/$BASE_REF"
+          node ../base/hub/cli.js guard --github --rules "refs/remotes/origin/$BASE_REF"

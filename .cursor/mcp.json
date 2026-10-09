@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "hub": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/hub/cli.js",
+        "mcp",
+        "--assistant",
+        "cursor"
+      ]
+    }
+  }
+}

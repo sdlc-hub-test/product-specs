@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "command": "node hub/cli.js hook session-start --assistant cursor"
+      }
+    ],
+    "beforeSubmitPrompt": [
+      {
+        "type": "command",
+        "command": "node hub/cli.js hook prompt --assistant cursor"
+      }
+    ],
+    "afterMCPExecution": [
+      {
+        "type": "command",
+        "command": "node hub/cli.js hook tool --assistant cursor"
+      }
+    ]
+  }
+}

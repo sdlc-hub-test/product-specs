@@ -1,0 +1,14 @@
+{
+  "name": "product-specs",
+  "description": "The SDLC Hub plugin for Marketplace's product-specs",
+  "owner": {
+    "name": "Marketplace"
+  },
+  "plugins": [
+    {
+      "name": "hub",
+      "source": "./hub/plugin",
+      "description": "SDLC Hub commands for this project"
+    }
+  ]
+}

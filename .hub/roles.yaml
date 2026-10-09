@@ -1,0 +1,5 @@
+schema_version: 1
+people:
+  - user: vitaliyoskalenko
+    name: Vitaliy
+    role: admin

@@ -1,0 +1,5 @@
+# Written by SDLC Hub: the hub's MCP server for Codex.
+[mcp_servers.hub]
+command = "sh"
+args = ["-c", "node \"$(git rev-parse --show-toplevel)/hub/cli.js\" mcp --assistant codex"]
+startup_timeout_sec = 20

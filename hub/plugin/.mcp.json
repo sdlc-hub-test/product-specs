@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "hub": {
+      "command": "node",
+      "args": [
+        "${CLAUDE_PROJECT_DIR}/hub/cli.js",
+        "mcp",
+        "--assistant",
+        "claude"
+      ]
+    }
+  }
+}
