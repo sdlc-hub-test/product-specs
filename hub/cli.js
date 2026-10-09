@@ -59007,12 +59007,21 @@ var GitHub = class {
   fetcher;
   api;
   async call(method, path, body) {
-    const res = await this.fetcher(`${this.api}${path}`, {
-      method,
-      signal: AbortSignal.timeout(6e4),
-      headers: { authorization: `Bearer ${this.token}`, accept: "application/vnd.github+json", "x-github-api-version": "2022-11-28", ...body === void 0 ? {} : { "content-type": "application/json" } },
-      body: body === void 0 ? void 0 : JSON.stringify(body)
-    });
+    let res;
+    for (let attempt = 1; !res; attempt++) {
+      try {
+        res = await this.fetcher(`${this.api}${path}`, {
+          method,
+          signal: AbortSignal.timeout(6e4),
+          headers: { authorization: `Bearer ${this.token}`, accept: "application/vnd.github+json", "x-github-api-version": "2022-11-28", ...body === void 0 ? {} : { "content-type": "application/json" } },
+          body: body === void 0 ? void 0 : JSON.stringify(body)
+        });
+      } catch (e) {
+        const cause = e.cause;
+        if (attempt >= 3) throw new Error(`Could not reach GitHub for ${method} ${path}: ${e.message}${cause ? ` (${cause.code ?? cause.message})` : ""}`);
+        await new Promise((r) => setTimeout(r, attempt * 1500));
+      }
+    }
     const text2 = await res.text();
     const data = text2 ? JSON.parse(text2) : void 0;
     if (!res.ok) {
@@ -61144,7 +61153,12 @@ function hostSaves(config2, o = {}) {
     },
     async propose({ branch, title, target }) {
       const gh = client();
-      const pr = await gh.createPull(config2.git.namespace, config2.git.repo, branch, target, title, autoMerge ? "Saved from SDLC Hub. It merges itself when hub-guard passes." : "Saved from SDLC Hub. Merge it when hub-guard has run.");
+      const body = autoMerge ? "Saved from SDLC Hub. It merges itself when hub-guard passes." : "Saved from SDLC Hub. Merge it when hub-guard has run.";
+      const pr = await gh.createPull(config2.git.namespace, config2.git.repo, branch, target, title, body).catch(async (e) => {
+        const open2 = e instanceof HostError && e.status === 422 ? (await gh.openPulls(config2.git.namespace, config2.git.repo, branch))[0] : void 0;
+        if (!open2) throw e;
+        return open2;
+      });
       if (autoMerge) await gh.autoMerge(pr);
       return { iid: pr.number, url: pr.html_url };
     }
