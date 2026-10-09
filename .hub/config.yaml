@@ -22,3 +22,10 @@ assistants: [claude, codex, cursor]
 engine: sdd
 headless:
   enabled: false
+guard:
+  mode: enforce
+  checks:
+    files: true
+    signoffs: true
+    pushers: true
+    members: true
