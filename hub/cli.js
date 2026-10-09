@@ -60586,6 +60586,11 @@ async function installGitHub(a, gh, opts2) {
       return sha2 ? { link: `${web}/${org}/${name}/commit/${sha2}` } : { state: "skip" };
     }
     const pending = (await gh.openPulls(org, name, INSTALL_BRANCH2))[0];
+    if (pending) {
+      let same = true;
+      for (const [path, content] of Object.entries(changed)) if (await gh.file(org, name, path, INSTALL_BRANCH2) !== content) same = false;
+      if (same) return { state: "skip", text: `${w.changeRequest} ${w.sign}${pending.number} with these hub files is open already; it merges itself when hub-guard passes`, link: pending.html_url };
+    }
     const sha = push(pending ? INSTALL_BRANCH2 : main, INSTALL_BRANCH2, !pending);
     for (let i = 0; i < 30 && sha && (await gh.branch(org, name, INSTALL_BRANCH2))?.commit.sha !== sha; i++) await new Promise((r) => setTimeout(r, 1e3));
     const pr = pending ?? await gh.createPull(org, name, INSTALL_BRANCH2, main, "Update SDLC Hub", "Written by setup. It merges itself when hub-guard passes.");
