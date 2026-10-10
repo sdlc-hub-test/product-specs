@@ -2,8 +2,8 @@
   "schema_version": 1,
   "team": "backend",
   "slug": "bulk-order-export",
-  "source_commit": "c5c41c8fc831032249e98f6f186db455cebe8079",
-  "generated_at": "2026-10-10T13:18:26Z",
+  "source_commit": "4fd6200437e32c80a70a3f396c27e6865b0e707b",
+  "generated_at": "2026-10-10T13:19:48Z",
   "files": [
     "tasks.json",
     "tasks/tracker.md"
