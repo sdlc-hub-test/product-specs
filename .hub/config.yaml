@@ -16,13 +16,9 @@ teams:
     name: Web
     repo: sdlc-hub-test/web-admin
     kind: web
-  - id: android
-    name: Android
-    repo: sdlc-hub-test/android-app
-    kind: android
 tracker:
   type: none
-assistants: [ claude, codex, cursor ]
+assistants: [claude, codex, cursor]
 engine: sdd
 headless:
   enabled: false
