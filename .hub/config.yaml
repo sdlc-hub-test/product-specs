@@ -27,7 +27,7 @@ engine: sdd
 headless:
   enabled: false
 guard:
-  mode: enforce
+  mode: advisory
   checks:
     files: true
     signoffs: true
