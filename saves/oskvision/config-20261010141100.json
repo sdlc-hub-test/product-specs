@@ -1,0 +1,14 @@
+{
+  "branch": "hub/oskvision/config-20261010141100",
+  "mr": 72,
+  "author": "oskvision",
+  "sha": "26a220bf1a405434806ba8a68f9bc3ed3d6ac059",
+  "at": "2026-10-10T14:11:14Z",
+  "findings": [
+    {
+      "user": "oskvision",
+      "path": ".hub/config.yaml",
+      "reason": "No role of oskvision (po) may change .hub/config.yaml"
+    }
+  ]
+}
