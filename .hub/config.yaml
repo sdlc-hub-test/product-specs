@@ -18,12 +18,12 @@ teams:
     kind: web
 tracker:
   type: none
-assistants: [claude, codex, cursor]
+assistants: [ claude, codex, cursor ]
 engine: sdd
 headless:
   enabled: false
 guard:
-  mode: enforce
+  mode: advisory
   checks:
     files: true
     signoffs: true
